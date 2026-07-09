@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label, Input, Textarea } from "@/components/ui/field";
 import { useState } from "react";
-import { Trash2, Edit2, X } from "lucide-react";
+import { Trash2, Edit2 } from "lucide-react";
 
 function EducationForm({
   onSubmit,

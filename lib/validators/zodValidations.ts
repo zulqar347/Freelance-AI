@@ -85,19 +85,29 @@ export const UserProfileSchema = z.object({
   skills: z.array(z.string()).min(1, "At least one skill is required"),
 });
 
-export const EducationGenerationSchema = z.object({
-  institution: z
-    .string()
-    .min(2, "Institution name must be at least 2 characters long"),
-  degree: z.string().min(2, "Degree must be at least 2 characters long"),
-  fieldOfStudy: z
-    .string()
-    .min(2, "Field of study must be at least 2 characters long"),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
-  isCurrent: z.boolean(),
-  description: z.string().optional(),
-});
+export const EducationGenerationSchema = z
+  .object({
+    institution: z
+      .string()
+      .min(2, "Institution name must be at least 2 characters long"),
+    degree: z.string().min(2, "Degree must be at least 2 characters long"),
+    fieldOfStudy: z
+      .string()
+      .min(2, "Field of study must be at least 2 characters long"),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date().nullable().optional(),
+    isCurrent: z.boolean(),
+    description: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.isCurrent && !data.endDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["endDate"],
+        message: "End date is required unless this is your current position.",
+      });
+    }
+  });
 
 export const EducationPatchSchema = z.object({
   institution: z

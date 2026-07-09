@@ -39,8 +39,7 @@ export function DashboardPage() {
     (profiles.data?.length ?? 0) +
     (proposals.data?.length ?? 0) +
     (covers.data?.length ?? 0);
-  const isPaidPlan = true;
-  //  user?.plan === "Pro" || user?.plan === "Enterprise";
+  const isPaidPlan = user?.plan === "Pro" || user?.plan === "Enterprise";
 
   return (
     <AppShell>
@@ -126,8 +125,8 @@ export function DashboardPage() {
               ) : (
                 <div className="mt-4 rounded-xl border border-dashed border-white/10 p-4 text-sm text-zinc-500">
                   {isPaidPlan
-                    ? "Generate your landing page"
-                    : "Upgrade to Pro to generate your landing page"}
+                    ? "Generate your Portfolio page"
+                    : "Upgrade to Pro to generate your Portfolio page"}
                 </div>
               )}
               <button
