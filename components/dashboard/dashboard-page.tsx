@@ -132,7 +132,11 @@ export function DashboardPage() {
               )}
               <button
                 type="button"
-                onClick={() => void generateLandingPage.mutateAsync()}
+                onClick={() =>
+                  void generateLandingPage.mutateAsync({
+                    template: "developer",
+                  })
+                }
                 disabled={!isPaidPlan || generateLandingPage.isPending}
                 className="mt-4 inline-flex items-center gap-2 rounded-lg bg-cyan-300 px-4 py-2 text-sm font-medium text-zinc-950 transition disabled:cursor-not-allowed disabled:opacity-60"
               >

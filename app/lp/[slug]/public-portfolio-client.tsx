@@ -15,8 +15,17 @@ interface ClientProps {
   initialTemplate: PortfolioTemplate;
 }
 
+function isPortfolioData(content: unknown): content is PortfolioData {
+  if (!content || typeof content !== "object") {
+    return false;
+  }
+
+  const data = content as Partial<PortfolioData>;
+
+  return !!data.hero && !!data.about && !!data.contact && !!data.seo;
+}
+
 export function PublicPortfolioClient({
-  slug,
   initialContent,
   initialTemplate,
 }: ClientProps) {
@@ -26,12 +35,14 @@ export function PublicPortfolioClient({
 
   // If your client hook holds data for this page, read from it.
   // Otherwise, fallback flawlessly to the server-hydrated content.
-  const activeContent = data?.content || initialContent;
+  const activeContent = isPortfolioData(data?.content)
+    ? data.content
+    : initialContent;
   const activeTemplate = data?.content.template || initialTemplate;
 
   return (
     <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#27272a05_1px,transparent_1px),linear-gradient(to_bottom,#27272a05_1px,transparent_1px)] bg-[size:2rem_2rem]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#27272a05_1px,transparent_1px),linear-gradient(to_bottom,#27272a05_1px,transparent_1px)] bg-position-[2rem_2rem]" />
       <main>
         {activeTemplate === "minimal" && (
           <MinimalPortfolio data={activeContent} />

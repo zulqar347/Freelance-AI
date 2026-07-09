@@ -1,5 +1,6 @@
 import { AuthPage } from "@/components/common/auth-page";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Sign In | Freelance AI",
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function Auth() {
-  return <AuthPage />;
+  return (
+    <Suspense fallback={null}>
+      <AuthPage />
+    </Suspense>
+  );
 }

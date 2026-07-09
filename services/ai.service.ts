@@ -6,7 +6,6 @@ import {
   buildCoverLetterPrompt,
   UserProfilePayload,
 } from "@/lib/prompts/builder";
-import { PortfolioTemplate } from "@/types/portfolio";
 
 async function generate<T>(
   systemInstruction: string,

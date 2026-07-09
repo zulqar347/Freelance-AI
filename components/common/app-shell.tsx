@@ -30,11 +30,13 @@ import { useProfileStatus } from "@/hooks/use-app-data";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/profile-generator", label: "Profile", icon: UserRound },
+  { href: "/portfolio", label: "PortfolioSite", icon: FolderKanban },
   { href: "/resume-generator", label: "Resume", icon: FileUser },
+  { href: "/profile-generator", label: "Profile", icon: UserRound },
+
   { href: "/proposal-generator", label: "Proposal", icon: PenLine },
   { href: "/cover-letter-generator", label: "Cover Letter", icon: FileText },
-  { href: "/history", label: "PortfolioSite", icon: FolderKanban },
+
   { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

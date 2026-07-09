@@ -40,8 +40,6 @@ export async function POST(req: NextRequest) {
   try {
     switch (event.type) {
       case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-
         const checkout = event.data.object as Stripe.Checkout.Session;
 
         const userId = checkout.metadata?.userId;
@@ -167,9 +165,13 @@ export async function POST(req: NextRequest) {
         const invoice = event.data.object as Stripe.Invoice;
 
         if (!invoice.customer) break;
+        const customerId =
+          typeof invoice.customer === "string"
+            ? invoice.customer
+            : invoice.customer.id;
 
         const user = await User.findOne({
-          stripeCustomerId: invoice.customer,
+          stripeCustomerId: customerId,
         });
 
         if (!user) break;
@@ -193,10 +195,14 @@ export async function POST(req: NextRequest) {
 
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
+        const customerId =
+          typeof invoice.customer === "string"
+            ? invoice.customer
+            : invoice?.customer?.id;
 
         await User.findOneAndUpdate(
           {
-            stripeCustomerId: invoice.customer,
+            stripeCustomerId: customerId,
           },
           {
             subscriptionStatus: "past_due",
