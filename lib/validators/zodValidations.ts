@@ -46,7 +46,17 @@ export const ExperiencePatchSchema = z.object({
 export const ProjectGenerationSchema = z.object({
   title: z.string().min(2, "Project title must be at least 2 characters long"),
   description: z.string().optional(),
-  technologies: z.array(z.string()).optional(),
+  technologies: z.preprocess((value) => {
+    // console.log("preprocess:", value);
+    if (typeof value === "string") {
+      return value
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+    }
+
+    return value;
+  }, z.array(z.string()).optional()),
   liveUrl: z.string().url().optional(),
   githubUrl: z.string().url().optional(),
 });

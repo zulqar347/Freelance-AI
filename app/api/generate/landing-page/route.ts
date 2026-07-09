@@ -26,6 +26,7 @@ export async function GET() {
         data: page
           ? {
               slug: page.slug,
+              template: page.template,
               url: `/lp/${page.slug}`,
               content: page.content as Record<string, unknown>,
             }
@@ -53,6 +54,8 @@ export const POST = async (req: Request) => {
       });
     }
     await ConnectDB();
+    const data = await req.json();
+    const { template } = data;
     const plan = await User.findById(userId).select("plan");
     if (plan?.plan === "Free") {
       return NextResponse.json(
@@ -72,11 +75,12 @@ export const POST = async (req: Request) => {
         {
           userId,
           slug,
+          template: template,
           isPublished: true,
           content: generatedcover as object,
         },
         {
-          new: true,
+          // new: true,
           upsert: true,
           runValidators: true,
           setDefaultsOnInsert: true,
@@ -89,6 +93,7 @@ export const POST = async (req: Request) => {
         data: landingPage
           ? {
               slug: landingPage.slug,
+              template: landingPage.template,
               url: `/lp/${landingPage.slug}`,
               content: landingPage.content as Record<string, unknown>,
             }

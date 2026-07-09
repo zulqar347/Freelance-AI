@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface IPortfolioPage extends mongoose.Document {
   userId: mongoose.Types.ObjectId;
   slug: string;
-  template: "professional" | "developer" | "premium";
+  template: "minimal" | "developer" | "executive";
   title: string;
   isPublished: boolean;
   content: Record<string, unknown>;
@@ -35,7 +35,7 @@ const PortfolioPageSchema = new mongoose.Schema(
 
     template: {
       type: String,
-      enum: ["professional", "developer", "premium"],
+      enum: ["minimal", "developer", "executive"],
       default: "professional",
     },
 

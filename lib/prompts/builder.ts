@@ -7,6 +7,7 @@ import {
   upworkPrompt,
 } from "./profile";
 import { LandingPagePrompt } from "./landingPage";
+import { PortfolioTemplate } from "@/types/portfolio";
 
 export interface UserProfilePayload {
   personal: {

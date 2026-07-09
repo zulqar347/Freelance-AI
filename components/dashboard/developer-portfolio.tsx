@@ -1,110 +1,187 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { PortfolioData } from "./portfolioGenerator-page";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Terminal, ExternalLink, Mail, Menu, X, Code2 } from "lucide-react";
+import { PortfolioData } from "@/types/portfolio";
 
-interface TemplateProps {
-  data: PortfolioData;
-}
+// Pure SVG Icons to eliminate dependency gaps
+const GithubIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+  </svg>
+);
 
-const animationVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-  },
-};
+const LinkedinIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+  </svg>
+);
 
-export const DeveloperPortfolio = React.memo(({ data }: TemplateProps) => {
-  const { hero, about, skills, projects, experience, education, contact } =
-    data;
+export function DeveloperPortfolio({ data }: { data: PortfolioData }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { hero, about, skills, projects, experience, contact } = data;
 
-  const hasSkills = useMemo(
-    () => !!(skills?.categories && skills.categories.length > 0),
-    [skills],
-  );
-  const hasProjects = useMemo(
-    () => !!(projects && projects.length > 0),
-    [projects],
-  );
-  const hasExperience = useMemo(
-    () => !!(experience && experience.length > 0),
-    [experience],
-  );
-  const hasEducation = useMemo(
-    () => !!(education && education.length > 0),
-    [education],
-  );
+  const isValidAvatar = (url?: string) =>
+    url && url.startsWith("http") && !url.includes("profile/picture/0");
+
+  const navItems = [
+    { name: "// about", href: "#about" },
+    ...(skills?.categories ? [{ name: "// skills", href: "#skills" }] : []),
+    ...(projects ? [{ name: "// projects", href: "#projects" }] : []),
+    ...(experience ? [{ name: "// experience", href: "#experience" }] : []),
+    { name: "// contact", href: "#contact" },
+  ];
 
   return (
-    <div className="w-full bg-black text-zinc-100 min-h-full font-mono selection:bg-cyan-500/20 text-xs p-6 md:p-12 space-y-16">
-      {/* HERO SECTION */}
-      <motion.header
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={animationVariants}
-        className="space-y-4 max-w-2xl"
-      >
-        <div className="text-cyan-400 font-mono text-xs tracking-widest uppercase">
-          ROOT INITIALIZATION
-        </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white font-sans">
-          {hero.name}
-        </h1>
-        <p className="text-sm font-medium text-zinc-300">
-          {hero.title} <span className="text-zinc-600">—</span> {hero.subtitle}
-        </p>
-      </motion.header>
+    <div className="bg-zinc-950 text-zinc-300 font-mono min-h-screen selection:bg-purple-500/20 antialiased">
+      {/* NAVBAR */}
+      <nav className="fixed top-0 left-0 w-full bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 z-50 px-6 h-16 flex items-center justify-between">
+        <Link href="#" className="font-bold text-white flex items-center gap-2">
+          <Terminal className="size-4 text-purple-400" />
+          <span>{hero.name.toLowerCase().replace(/\s+/g, "-")}</span>
+        </Link>
 
-      {/* ABOUT LAYER */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={animationVariants}
-        className="space-y-2 max-w-3xl"
-      >
-        <div className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">
-          01 / OVERVIEW
+        <div className="hidden md:flex items-center gap-6 text-xs">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="hover:text-purple-400 transition-colors"
+            >
+              {item.name}
+            </a>
+          ))}
+          {contact.email && (
+            <a
+              href={`mailto:${contact.email}`}
+              className="bg-purple-950/40 border border-purple-800 text-purple-300 px-3 py-1.5 rounded hover:bg-purple-900/40 transition text-xs font-sans"
+            >
+              Get in touch
+            </a>
+          )}
         </div>
-        <h2 className="text-base font-bold text-white font-sans">
-          {about.headline}
-        </h2>
-        <p className="text-zinc-400 leading-relaxed font-sans text-sm">
-          {about.description}
-        </p>
-      </motion.section>
 
-      {/* TECH STACK MODULE */}
-      {hasSkills && (
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={animationVariants}
-          className="space-y-4"
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden text-zinc-400 hover:text-white"
         >
-          <div className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">
-            02 / CAPABILITIES MATRIX
+          {mobileMenuOpen ? (
+            <X className="size-5" />
+          ) : (
+            <Menu className="size-5" />
+          )}
+        </button>
+      </nav>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 top-16 bg-zinc-950 z-40 flex flex-col p-6 gap-4 border-t border-zinc-900 md:hidden">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm py-2 border-b border-zinc-900 hover:text-purple-400"
+            >
+              {item.name}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* HERO SECTION */}
+      <header className="max-w-5xl mx-auto pt-32 pb-20 px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div
+          className={
+            isValidAvatar(hero.image)
+              ? "md:col-span-8 space-y-4"
+              : "md:col-span-12 space-y-4"
+          }
+        >
+          <div className="text-purple-400 text-xs">
+            connection pipeline authenticated
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {skills?.categories.map((cat, idx) => (
-              <div
-                key={idx}
-                className="border border-zinc-900 bg-zinc-950 p-4 rounded-xl"
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">
+            {hero.name}
+          </h1>
+          <h2 className="text-zinc-400 font-sans font-medium text-lg md:text-xl">
+            {hero.title}
+          </h2>
+          <p className="text-zinc-500 font-sans max-w-xl text-sm leading-relaxed">
+            {hero.subtitle}
+          </p>
+          <div className="pt-4 flex flex-wrap gap-4">
+            {contact.email && (
+              <a
+                href={`mailto:${contact.email}`}
+                className="bg-white text-zinc-950 font-sans font-semibold text-xs px-5 py-3 rounded-lg hover:bg-zinc-200 transition"
               >
-                <span className="text-zinc-400 font-bold block mb-2">
-                  {cat.name}
-                </span>
+                Get in touch
+              </a>
+            )}
+            {projects && projects.length > 0 && (
+              <a
+                href="#projects"
+                className="border border-zinc-800 text-zinc-400 font-sans text-xs px-5 py-3 rounded-lg hover:bg-zinc-900/50 transition"
+              >
+                View Architecture
+              </a>
+            )}
+          </div>
+        </div>
+
+        {isValidAvatar(hero.image) && (
+          <div className="md:col-span-4 flex justify-center">
+            <div className="relative size-56 rounded-2xl border-2 border-dashed border-purple-500/30 p-2">
+              <img
+                src={hero.image}
+                alt={hero.name}
+                className="w-full h-full object-cover rounded-xl filter grayscale contrast-125"
+              />
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* ABOUT NODE */}
+      <section
+        id="about"
+        className="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900 scroll-mt-16"
+      >
+        <div className="text-zinc-500 text-xs mb-2">01. ABOUT_MODULE</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h3 className="text-white text-base font-bold md:col-span-1">
+            {about.headline}
+          </h3>
+          <p className="font-sans text-zinc-400 text-sm leading-relaxed md:col-span-2">
+            {about.description}
+          </p>
+        </div>
+      </section>
+
+      {/* SKILLS NODES */}
+      {skills?.categories && skills.categories.length > 0 && (
+        <section
+          id="skills"
+          className="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900 scroll-mt-16"
+        >
+          <div className="text-zinc-500 text-xs mb-6">
+            02. CORE_CAPABILITIES
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {skills.categories.map((cat, i) => (
+              <div
+                key={i}
+                className="border border-zinc-900 bg-zinc-900/10 p-4 rounded-xl"
+              >
+                <h4 className="font-bold text-purple-400 mb-3 text-xs uppercase flex items-center gap-1.5">
+                  <Code2 className="size-3.5" /> {cat.name}
+                </h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {cat.items.map((item, i) => (
+                  {cat.items.map((item, idx) => (
                     <span
-                      key={i}
-                      className="px-2 py-1 rounded bg-zinc-900 text-[11px] text-cyan-400 border border-zinc-800"
+                      key={idx}
+                      className="bg-zinc-950 border border-zinc-800 px-2 py-1 rounded text-[11px] text-zinc-400"
                     >
                       {item}
                     </span>
@@ -113,216 +190,138 @@ export const DeveloperPortfolio = React.memo(({ data }: TemplateProps) => {
               </div>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
-      {/* APP PRODUCTION REPOSITORIES */}
-      {hasProjects && (
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={animationVariants}
-          className="space-y-4"
+      {/* PROJECTS MATRIX */}
+      {projects && projects.length > 0 && (
+        <section
+          id="projects"
+          className="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900 scroll-mt-16"
         >
-          <div className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">
-            03 / FUNCTIONAL SOURCE ARTIFACTS
+          <div className="text-zinc-500 text-xs mb-6">
+            03. EXECUTED_APPLICATIONS
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {projects?.map((proj) => (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {projects.map((proj) => (
               <div
                 key={proj.id}
-                className="border border-zinc-950 bg-gradient-to-br from-zinc-950 to-black p-5 rounded-xl flex flex-col justify-between group hover:border-zinc-800 transition-all duration-300"
+                className="border border-zinc-900 bg-zinc-950 p-5 rounded-xl flex flex-col justify-between space-y-4 hover:border-zinc-800 transition"
               >
                 <div className="space-y-2">
-                  <div className="flex items-start justify-between">
-                    <h4 className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors font-sans">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-white text-sm">
                       {proj.title}
                     </h4>
-                    {proj.link && (
-                      <a
-                        href={proj.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-zinc-600 hover:text-white transition"
-                      >
-                        <ArrowUpRight className="size-4" />
-                      </a>
-                    )}
+                    <div className="flex items-center gap-3 text-zinc-500">
+                      {proj.link && (
+                        <Link
+                          href={proj.link}
+                          target="_blank"
+                          className="hover:text-purple-400 transition"
+                        >
+                          <ExternalLink className="size-4" />
+                        </Link>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-zinc-400 text-xs font-sans leading-relaxed">
+                  <p className="font-sans text-zinc-400 text-xs leading-relaxed">
                     {proj.description}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-1 mt-4">
-                  {proj.technologies.map((tech, tIdx) => (
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {proj.technologies.map((tech) => (
                     <span
-                      key={tIdx}
-                      className="text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded"
+                      key={tech}
+                      className="text-zinc-600 text-[10px] font-mono"
                     >
-                      {tech}
+                      • {tech}
                     </span>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
-      {/* TIMELINE ARCHITECTURE */}
-      {hasExperience && (
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={animationVariants}
-          className="space-y-4"
+      {/* CHRONOLOGY HISTORY */}
+      {experience && experience.length > 0 && (
+        <section
+          id="experience"
+          className="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900 scroll-mt-16"
         >
-          <div className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">
-            04 / SYSTEM EXP HISTORY
+          <div className="text-zinc-500 text-xs mb-6">
+            04. TIMELINE_REGISTRY
           </div>
-          <div className="border-l border-zinc-900 ml-2 pl-6 space-y-6">
-            {experience?.map((exp) => (
-              <div key={exp.id} className="relative group">
-                <span className="absolute -left-[31px] top-1.5 size-2 rounded-full bg-zinc-800 group-hover:bg-cyan-500 transition-colors" />
-                <div className="text-[11px] text-zinc-500 font-mono mb-1">
-                  {exp.period}
+          <div className="space-y-8 border-l border-zinc-900 pl-4 ml-2">
+            {experience.map((exp) => (
+              <div key={exp.id} className="relative space-y-1">
+                <div className="absolute -left-[21px] top-1.5 size-2 rounded-full bg-purple-500" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-zinc-300 text-xs gap-1">
+                  <span className="font-bold text-white text-sm">
+                    {exp.role}
+                  </span>
+                  <span className="text-zinc-500 text-[11px]">
+                    {exp.period}
+                  </span>
                 </div>
-                <h4 className="text-sm font-bold text-white font-sans">
-                  {exp.role}
-                </h4>
-                <div className="text-xs text-cyan-400 mb-2">{exp.company}</div>
-                <p className="text-zinc-400 font-sans text-xs leading-relaxed max-w-2xl">
+                <div className="text-zinc-500 text-xs">{exp.company}</div>
+                <p className="font-sans text-zinc-400 text-xs pt-2 leading-relaxed max-w-2xl">
                   {exp.description}
                 </p>
               </div>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
-      {/* EDUCATION */}
-      {hasEducation && (
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={animationVariants}
-          className="space-y-4"
-        >
-          <div className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold">
-            05 / SCHOLASTIC ROSTER
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            {education?.map((edu) => (
-              <div
-                key={edu.id}
-                className="flex justify-between items-start border-b border-zinc-900 pb-2"
-              >
-                <div>
-                  <h4 className="text-xs font-bold text-white font-sans">
-                    {edu.degree}
-                  </h4>
-                  <p className="text-zinc-500 text-xs font-sans">
-                    {edu.school}
-                  </p>
-                </div>
-                <span className="text-zinc-500 text-xs font-mono">
-                  {edu.year}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-      )}
-
-      {/* CONTACT METADATA BRACKET */}
-      <motion.footer
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={animationVariants}
-        className="pt-8 border-t border-zinc-900 flex flex-wrap gap-4 items-center justify-between text-zinc-500 text-xs"
+      {/* CONTACT TIER */}
+      <section
+        id="contact"
+        className="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900 mb-12 scroll-mt-16"
       >
-        <span> CHANNEL STREAMS RECOVERY READY</span>
-        <div className="flex items-center gap-4">
-          {contact.email && (
-            <a
-              href={`mailto:${contact.email}`}
-              className="hover:text-cyan-400 transition"
-              title="Email"
-            >
-              <svg
-                className="size-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+        <div className="text-zinc-500 text-xs mb-6">05. DISPATCH_NODE</div>
+        <div className="border border-purple-900/30 bg-purple-950/5 rounded-2xl p-6 md:p-8 text-center max-w-2xl mx-auto space-y-4">
+          <h4 className="text-white text-base font-bold">
+            Initiate Connection Sequence
+          </h4>
+          <p className="font-sans text-zinc-400 text-xs max-w-md mx-auto">
+            Open for full-time engagements, scalable dashboard engineering
+            setups, and technical partnerships.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center items-center gap-6 text-zinc-400">
+            {contact.email && (
+              <a
+                href={`mailto:${contact.email}`}
+                className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-sans px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 transition"
               >
-                <rect width="20" height="16" x="2" y="4" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-            </a>
-          )}
-          {contact.github && (
-            <a
-              href={contact.github}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition"
-              title="GitHub"
-            >
-              <svg className="size-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.164 22 16.418 22 12c0-5.523-4.477-10-10-10z"
-                />
-              </svg>
-            </a>
-          )}
-          {contact.linkedin && (
-            <a
-              href={contact.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition"
-              title="LinkedIn"
-            >
-              <svg className="size-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                />
-              </svg>
-            </a>
-          )}
-          {contact.website && (
-            <a
-              href={contact.website}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cyan-400 transition"
-              title="Website"
-            >
-              <svg
-                className="size-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="2" x2="22" y1="12" y2="12" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-            </a>
-          )}
+                <Mail className="size-3.5" /> Email Node
+              </a>
+            )}
+            <div className="flex items-center gap-4 text-zinc-500">
+              {contact.github && (
+                <Link
+                  href={contact.github}
+                  target="_blank"
+                  className="hover:text-white transition"
+                >
+                  <GithubIcon className="size-5" />
+                </Link>
+              )}
+              {contact.linkedin && (
+                <Link
+                  href={contact.linkedin}
+                  target="_blank"
+                  className="hover:text-white transition"
+                >
+                  <LinkedinIcon className="size-5" />
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
-      </motion.footer>
+      </section>
     </div>
   );
-});
-DeveloperPortfolio.displayName = "DeveloperPortfolio";
+}

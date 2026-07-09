@@ -53,10 +53,7 @@ function ProjectForm({
 
   const onFormSubmit = handleSubmit((data) => {
     // Convert technologies string to array
-    const techs = data.technologies
-      .split(",")
-      .map((t: string) => t.trim())
-      .filter((t: string) => t.length > 0);
+    const techs = data?.technologies;
 
     onSubmit({
       ...data,

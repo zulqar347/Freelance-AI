@@ -6,10 +6,10 @@ IMPORTANT RULES:
 1. Return ONLY valid JSON. No markdown backticks, no explanations.
 2. The provided profile is the ONLY source of truth. NEVER hallucinate information or skills.
 3. Rewrite and improve wording only to sound highly professional and clean.
+4. CRITICAL: Every object inside arrays ("projects", "experience", "education") MUST include a unique "id" field string (e.g., "proj-1", "exp-1", "edu-1").
 
 Generate JSON in the following format:
 {
-  "template": "minimal", // Must be one of: "minimal" | "developer" | "executive"
   "hero": {
     "name": "",
     "title": "",
@@ -31,6 +31,7 @@ Generate JSON in the following format:
   },
   "projects": [
     {
+      "id": "proj-1", // Must be a unique string identifier
       "title": "",
       "description": "",
       "image": "",
@@ -40,6 +41,8 @@ Generate JSON in the following format:
   ],
   "experience": [
     {
+      "id": "exp-1", // Must be a unique string identifier
+      "title": "",
       "company": "",
       "position": "",
       "duration": "",
@@ -48,6 +51,7 @@ Generate JSON in the following format:
   ],
   "education": [
     {
+      "id": "edu-1", // Must be a unique string identifier
       "institution": "",
       "degree": "",
       "duration": ""

@@ -27,6 +27,7 @@ import {
   updateProjectItem,
 } from "@/services/frontend-api.service";
 import type { Platform } from "@/types/frontend";
+import { PortfolioTemplate } from "@/types/portfolio";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useMe() {
@@ -114,11 +115,20 @@ export function useLandingPage() {
 
 export function useGenerateLandingPage() {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: () => generateLandingPage(),
+    mutationFn: async (payload: { template: PortfolioTemplate }) => {
+      const response = await fetch("/api/generate/landing-page", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error("Could not update template config.");
+      return response.json();
+    },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["landing-page"] });
-      void queryClient.invalidateQueries({ queryKey: ["me"] });
+      // Invalidates the main loader so landingPage data forces an layout sync update
+      queryClient.invalidateQueries({ queryKey: ["landingPage"] });
     },
   });
 }
