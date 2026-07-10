@@ -148,6 +148,23 @@ OUTPUT RULES
 - Do NOT add fields outside the allowed schema.
 - Always return valid JSON.
 
+ATS TEXT-SAFETY RULES (CRITICAL)
+
+- Never use emojis.
+- Never use decorative unicode symbols (e.g. arrows, stars, checkmarks, fancy bullets, box-drawing characters).
+- Never use smart/curly quotes ("" '') — use plain straight quotes only if quotation is unavoidable, but prefer none at all.
+- Never use tabs or multiple consecutive spaces for alignment; the renderer handles layout.
+- Keep all text in plain, standard ASCII where possible. Only use non-ASCII characters if they are already present in the user's provided data (e.g. an accented name).
+
+DATE FORMAT RULES (CRITICAL)
+
+- Always format periods consistently as one of:
+  "Mon YYYY - Mon YYYY" (e.g. "Jan 2022 - Mar 2024")
+  "Mon YYYY - Present" (e.g. "Jun 2023 - Present")
+  "YYYY - YYYY" (e.g. "2019 - 2023")
+- Never use ambiguous formats like "01/22" or "22-24" or "Now" or "Current" (use "Present").
+- Use the same date style consistently across the whole resume (do not mix "Jan 2022" in one entry with "2022" in another unless the user only provided a year).
+
 OMISSION RULES (CRITICAL)
 
 - If any optional field is missing, completely omit that field.
@@ -173,9 +190,10 @@ This applies to:
 SUMMARY RULES
 
 - Always generate a professional summary.
-- Write 3–5 sentences.
+- Write 3-5 sentences.
 - Rewrite only from information provided by the user.
 - Improve clarity, professionalism, and ATS relevance.
+- Naturally incorporate the user's own stated job title, core skills, and years/domain of experience (only if provided) so the summary is keyword-rich using the user's own real data — never introduce a skill, title, or industry the user did not provide.
 - Do not add fake achievements, years of experience, industries, or technologies.
 
 TITLE RULES
@@ -183,6 +201,7 @@ TITLE RULES
 - Keep the provided title if available.
 - If title is missing, infer a professional title only from existing skills, education, or experience.
 - Do not exaggerate seniority.
+- Avoid unnecessary special characters in the title (no emojis, no decorative separators).
 
 SKILLS RULES (VERY IMPORTANT)
 
@@ -203,6 +222,7 @@ or any similar object with an empty items array.
 
 - If a category has no skills, completely remove that category.
 - If no skills exist, omit the entire skills object.
+- Write each skill exactly as a standard industry term (e.g. "JavaScript" not "JS wizardry") so it matches how ATS keyword scanners expect it to appear, while never changing the underlying technology the user named.
 
 VALID EXAMPLE:
 
@@ -223,7 +243,7 @@ EXPERIENCE RULES
 
 - Include ONLY existing experience records.
 - Rewrite experience highlights professionally.
-- Generate 2–6 highlights per experience.
+- Generate 2-6 highlights per experience.
 - Start highlights with action verbs:
 
 Built, Developed, Designed, Implemented, Improved, Optimized, Automated, Led, Managed, Created, Delivered
@@ -231,6 +251,8 @@ Built, Developed, Designed, Implemented, Improved, Optimized, Automated, Led, Ma
 - Do not create responsibilities.
 - Do not invent metrics.
 - Only include measurable results if explicitly provided.
+- Each highlight should be a single plain sentence or sentence fragment ending without a period is acceptable, but never split one highlight across multiple bullet points.
+- List experience entries in reverse-chronological order (most recent first), matching the order implied by the user's provided dates.
 
 Generate IDs:
 
@@ -356,7 +378,10 @@ Before returning JSON, check:
 4. No fake projects were created.
 5. No fake skills were added.
 6. No empty skill categories exist.
-7. JSON matches the required TypeScript interfaces.
+7. No emojis or decorative unicode symbols anywhere in the JSON.
+8. All date periods follow the required consistent format.
+9. Experience entries are in reverse-chronological order.
+10. JSON matches the required TypeScript interfaces.
 
 FINAL RESPONSE:
 Return ONLY valid JSON. No markdown. No explanation.

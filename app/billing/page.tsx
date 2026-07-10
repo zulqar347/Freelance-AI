@@ -3,12 +3,12 @@ import { createPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Freelance AI Pricing and Plans",
+  title: "Rah AI Pricing and Plans",
   description:
-    "Explore Freelance AI pricing for freelancers who want AI-powered proposals, profiles, resumes, and cover letters.",
+    "Explore Rah AI pricing for freelancers who want AI-powered proposals, profiles, resumes, and cover letters.",
   path: "/billing",
   keywords: [
-    "freelance AI pricing",
+    "Rah AI pricing",
     "AI freelancer toolkit pricing",
     "proposal generator pricing",
   ],

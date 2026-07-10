@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "Freelance AI",
+  name: "Rah AI",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://freelanceai.app",
   description:
     "AI-powered profile, resume, proposal, and cover letter generation for freelancers.",
@@ -14,7 +14,7 @@ export const defaultKeywords = [
   "LinkedIn profile generator",
   "AI resume builder",
   "AI cover letter generator",
-  "freelance AI",
+  "Rah AI",
   "AI for freelancers",
   "resume optimization",
   "freelance tools",

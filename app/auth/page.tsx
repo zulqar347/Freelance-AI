@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Sign In | Freelance AI",
-  description: "Sign in to your Freelance AI account.",
+  title: "Sign In | Rah AI",
+  description: "Sign in to your Rah AI account.",
   robots: {
     index: false,
     follow: false,

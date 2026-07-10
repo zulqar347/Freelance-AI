@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Freelance AI",
+  title: "Dashboard | Rah AI",
   description:
     "Manage your AI-powered freelance workspace, generate proposals, optimize your Fiverr and Upwork profiles, and access all your saved content.",
   robots: {

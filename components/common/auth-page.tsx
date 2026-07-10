@@ -98,7 +98,7 @@ export function AuthPage() {
           <span className="grid size-10 place-items-center rounded-xl bg-white text-zinc-950">
             <Sparkles className="size-5" />
           </span>
-          <span className="font-semibold">Freelance AI</span>
+          <span className="font-semibold">Rah AI</span>
         </Link>
         <ThemeToggle />
       </header>

@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import {
   BarChart3,
   CreditCard,
-  FileClock,
   FileText,
   FileUser,
   Home,
@@ -78,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
               <span>
                 <span className="block text-sm font-semibold text-white">
-                  Freelance AI
+                  Rah AI
                 </span>
                 <span className="text-xs text-zinc-500">Premium workspace</span>
               </span>

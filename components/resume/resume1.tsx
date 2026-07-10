@@ -30,21 +30,20 @@ export interface ProjectItem {
 export interface ResumeData {
   fullName: string;
   title: string;
-  email?: string; // Optional based on backend prompt
-  phone?: string; // Optional based on backend prompt
-  location?: string; // Optional based on backend prompt
-  avatarUrl?: string; // Optional based on backend prompt
-  website?: string; // Optional based on backend prompt
-  linkedin?: string; // Optional based on backend prompt
-  github?: string; // Optional based on backend prompt
+  email?: string;
+  phone?: string;
+  location?: string;
+  avatarUrl?: string;
+  website?: string;
+  linkedin?: string;
+  github?: string;
   summary: string;
   skills?: {
-    // Section omitted completely if empty
     categories: { name: string; items: string[] }[];
   };
-  experience?: ExperienceItem[]; // Section omitted completely if empty
-  education?: EducationItem[]; // Section omitted completely if empty
-  projects?: ProjectItem[]; // Section omitted completely if empty
+  experience?: ExperienceItem[];
+  education?: EducationItem[];
+  projects?: ProjectItem[];
 }
 
 export type ThemeColor = "indigo" | "emerald" | "slate" | "amber" | "blue";
@@ -90,13 +89,23 @@ const themeStyles: Record<
   },
 };
 
+// NOTE ON ATS-SAFE FONTS:
+// We force a plain, universally-recognized font stack specifically for the
+// printed/exported version. Some ATS PDF parsers fail to map glyphs to
+// characters correctly with unusual or web fonts. Arial/Helvetica/Calibri
+// are the safest bets industry-wide.
+const ATS_SAFE_FONT_STACK =
+  "Arial, Helvetica, 'Liberation Sans', Calibri, sans-serif";
+
 export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
   data,
   colorTheme = "indigo",
 }) => {
   const activeTheme = themeStyles[colorTheme];
 
-  // Helper utility to safely construct contact items without hanging/trailing separator lines
+  // Helper utility to safely construct contact items without hanging/trailing separator lines.
+  // Uses a plain ASCII "|" separator instead of a decorative bullet glyph — safer for
+  // ATS text extractors that sometimes mis-handle non-ASCII punctuation.
   const contactItems = [
     data.email,
     data.phone,
@@ -140,7 +149,26 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
     <div
       id="resume-print-canvas"
       className="w-full max-w-4xl mx-auto p-8 md:p-12 bg-white text-slate-800 shadow-sm font-sans selection:bg-slate-200 print:p-0 print:shadow-none"
+      style={{ fontFamily: undefined }}
     >
+      {/* Print-only style override: forces an ATS-safe font stack and disables any
+          multi-column layouts at export time, regardless of on-screen responsive styles. */}
+      <style>{`
+        @media print {
+          #resume-print-canvas, #resume-print-canvas * {
+            font-family: ${ATS_SAFE_FONT_STACK} !important;
+          }
+          #resume-print-canvas .ats-stack {
+            display: block !important;
+          }
+          #resume-print-canvas .ats-row {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+        }
+      `}</style>
+
       {/* HEADER SECTION */}
       <header className="border-b pb-6 border-slate-200">
         <h1 className="text-4xl font-bold tracking-tight text-slate-900">
@@ -150,13 +178,13 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
           {data.title}
         </p>
 
-        {/* Dynamic Contact Row (clean separator handling) */}
+        {/* Dynamic Contact Row (clean separator handling, ASCII-safe separator) */}
         {contactItems.length > 0 && (
           <div className="flex flex-wrap gap-y-2 gap-x-4 mt-4 text-sm text-slate-600">
             {contactItems.map((item, idx) => (
               <React.Fragment key={idx}>
                 {idx > 0 && (
-                  <span className="text-slate-300 select-none">•</span>
+                  <span className="text-slate-300 select-none">|</span>
                 )}
                 <span>{item}</span>
               </React.Fragment>
@@ -168,6 +196,7 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
       {/* SUMMARY */}
       {data.summary && (
         <section className="mt-6">
+          <h2 className="sr-only">Summary</h2>
           <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-line">
             {data.summary}
           </p>
@@ -185,7 +214,7 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
           <div className="mt-4 space-y-6">
             {data.experience.map((exp) => (
               <div key={exp.id} className="group">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                <div className="ats-row flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
                   <h3 className="text-base font-bold text-slate-900">
                     {exp.role}{" "}
                     <span className="font-normal text-slate-500">at</span>{" "}
@@ -220,7 +249,7 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
           <div className="mt-4 space-y-4">
             {data.projects.map((project) => (
               <div key={project.id}>
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                <div className="ats-row flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
                   <h3 className="text-base font-bold text-slate-900">
                     {project.title}
                     {project.link && (
@@ -256,27 +285,25 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
         </section>
       )}
 
-      {/* SKILLS SECTION */}
+      {/* SKILLS SECTION
+          Changed from a CSS grid (grid-cols-12) to a simple stacked block layout.
+          Multi-column CSS layouts risk out-of-order text extraction in some
+          PDF/ATS parsers; a single vertical flow guarantees correct reading order. */}
       {data.skills?.categories && data.skills.categories.length > 0 && (
         <section className="mt-8">
           <h2
             className={`text-sm font-bold tracking-wider uppercase border-b-2 pb-1 ${activeTheme.border} ${activeTheme.text}`}
           >
-            Skills & Core Competencies
+            Skills
           </h2>
-          <div className="mt-4 space-y-2.5">
+          <div className="mt-4 space-y-2 ats-stack">
             {data.skills.categories.map((category, idx) => (
-              <div
-                key={idx}
-                className="text-sm grid grid-cols-1 md:grid-cols-12 gap-1 md:gap-4"
-              >
-                <span className="font-bold text-slate-800 md:col-span-3">
+              <p key={idx} className="text-sm text-slate-700">
+                <span className="font-bold text-slate-800">
                   {category.name}:
-                </span>
-                <span className="text-slate-700 md:col-span-9">
-                  {category.items.join(", ")}
-                </span>
-              </div>
+                </span>{" "}
+                {category.items.join(", ")}
+              </p>
             ))}
           </div>
         </section>
@@ -294,7 +321,7 @@ export const ModernAtsResume: React.FC<ResumeTemplateProps> = ({
             {data.education.map((edu) => (
               <div
                 key={edu.id}
-                className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline"
+                className="ats-row flex flex-col sm:flex-row sm:justify-between sm:items-baseline"
               >
                 <div>
                   <h3 className="text-base font-bold text-slate-900">

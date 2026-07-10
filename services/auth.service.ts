@@ -59,12 +59,12 @@ export const sendVerificationEmail = async (
   const verificationUrl = `${siteUrl}/api/auth/verify?token=${token}`;
 
   await resend.emails.send({
-    from: "Freelance AI <onboarding@resend.dev>",
+    from: "Rah AI <onboarding@resend.dev>",
     to: [email],
     subject: "Verify your email address",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto;">
-        <h2>Welcome to Freelance AI, ${name}!</h2>
+        <h2>Welcome to Rah AI, ${name}!</h2>
         <p>Thanks for creating your account. Please verify your email address to start using the generator tools.</p>
         <p>
           <a href="${verificationUrl}" style="display:inline-block;padding:12px 18px;background:#06b6d4;color:#fff;text-decoration:none;border-radius:8px;">

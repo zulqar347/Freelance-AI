@@ -1,164 +1,264 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Briefcase, Menu, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowUpRight,
+  Menu,
+  X,
+  Sparkles,
+  Heart,
+  Palette,
+  Compass,
+  GraduationCap,
+} from "lucide-react";
 import { PortfolioData } from "@/types/portfolio";
+import Image from "next/image";
 
+// Elegant Minimalist SVG Icons
 const GithubIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
   </svg>
 );
 
 const LinkedinIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect width="4" height="12" x="2" y="9" />
+    <circle cx="4" cy="4" r="2" />
   </svg>
 );
 
 export function ExecutivePortfolio({ data }: { data: PortfolioData }) {
-  const [mobileNav, setMobileNav] = useState(false);
-  const { hero, about, skills, projects, experience, contact } = data;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { hero, about, skills, projects, experience, education, contact } =
+    data;
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isValidAvatar = (url?: string) =>
     url && url.startsWith("http") && !url.includes("profile/picture/0");
 
-  const links = [
-    { label: "Overview", href: "#overview" },
-    ...(skills?.categories ? [{ label: "Expertise", href: "#expertise" }] : []),
-    ...(projects ? [{ label: "Projects", href: "#cases" }] : []),
-    ...(experience ? [{ label: "Leadership History", href: "#history" }] : []),
+  const navItems = [
+    { label: "About", href: "#about" },
+    ...(skills?.categories ? [{ label: "Skills", href: "#skills" }] : []),
+    ...(projects?.length ? [{ label: "Projects", href: "#projects" }] : []),
+    ...(experience?.length
+      ? [{ label: "Experience", href: "#experience" }]
+      : []),
+    ...(education?.length ? [{ label: "Education", href: "#education" }] : []),
   ];
 
   return (
-    <div className="bg-zinc-950 text-zinc-400 font-serif min-h-screen selection:bg-amber-500/10 antialiased">
-      {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full bg-zinc-950/90 backdrop-blur-md border-b border-zinc-900 z-50 px-6 lg:px-16 h-20 flex items-center justify-between">
-        <Link
-          href="#"
-          className="text-zinc-100 tracking-wider font-light text-base uppercase"
-        >
-          {hero.name}
-        </Link>
-        <div className="hidden md:flex items-center gap-10 font-sans text-xs tracking-widest uppercase text-zinc-400">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="hover:text-amber-500 transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
-          {contact.email && (
-            <a
-              href={`mailto:${contact.email}`}
-              className="border border-amber-500/40 text-amber-500 px-4 py-2 hover:bg-amber-500 hover:text-zinc-950 transition"
-            >
-              Contact
-            </a>
-          )}
+    <div className="bg-[#0b0a0a] text-zinc-300 font-sans min-h-screen selection:bg-[#ebd3be]/20 selection:text-white antialiased relative">
+      {/* Decorative Subtle Ambient Glows */}
+      <div className="absolute top-0 right-1/4 w-125 h-125 bg-[#ebd3be]/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-[30%] left-10 w-75 h-75 bg-amber-500/3 blur-[100px] rounded-full pointer-events-none" />
+
+      {/* HEADER NAVIGATION */}
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-[#0b0a0a]/90 backdrop-blur-md border-b border-zinc-900/50 py-4"
+            : "bg-transparent py-6"
+        }`}
+      >
+        <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
+          <Link
+            href="#"
+            className="font-serif italic text-white tracking-wide text-lg"
+          >
+            {hero.name}
+          </Link>
+
+          <div className="hidden md:flex items-center gap-8 text-xs tracking-wider uppercase">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-zinc-400 hover:text-white transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+            {contact.email && (
+              <a
+                href={`mailto:${contact.email}`}
+                className="border border-[#ebd3be]/30 text-[#ebd3be] px-4 py-2 hover:bg-[#ebd3be] hover:text-[#0b0a0a] transition-all rounded-full"
+              >
+                Get In Touch
+              </a>
+            )}
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-zinc-400 hover:text-white"
+          >
+            {mobileMenuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
+          </button>
         </div>
-        <button
-          onClick={() => setMobileNav(!mobileNav)}
-          className="md:hidden text-zinc-400"
-        >
-          {mobileNav ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
       </nav>
 
-      {mobileNav && (
-        <div className="fixed inset-0 top-20 bg-zinc-950 z-40 p-6 flex flex-col gap-4 border-t border-zinc-900 md:hidden font-sans">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileNav(false)}
-              className="text-sm tracking-wide py-2 border-b border-zinc-900 text-zinc-300"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      )}
+      {/* MOBILE NAV OVERLAY */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="fixed inset-x-0 top-17 bg-[#0b0a0a] border-b border-zinc-900 z-40 p-6 flex flex-col gap-3 md:hidden"
+          >
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm py-2 text-zinc-300 hover:text-white border-b border-zinc-900"
+              >
+                {item.label}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* HERO BLOCK */}
-      <header className="max-w-4xl mx-auto pt-44 pb-24 px-6 text-center space-y-6">
-        <div className="font-sans text-amber-500 tracking-widest text-xs uppercase font-medium">
-          Executive Dossier
-        </div>
-        <h1 className="text-4xl md:text-6xl font-light text-zinc-100 italic leading-tight">
-          {hero.name}
-        </h1>
-        <p className="font-sans text-zinc-400 text-base md:text-lg font-light max-w-2xl mx-auto leading-relaxed">
-          {hero.title} — <span className="text-zinc-500">{hero.subtitle}</span>
-        </p>
-        <div className="pt-4 font-sans">
-          {contact.email && (
-            <a
-              href={`mailto:${contact.email}`}
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium text-xs tracking-wider uppercase px-6 py-3.5 transition rounded-sm"
-            >
-              Get in touch <ArrowRight className="size-3.5" />
-            </a>
+      {/* HERO SECTION */}
+      <header className="max-w-5xl mx-auto pt-36 pb-24 px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          <div
+            className={
+              isValidAvatar(hero.image)
+                ? "md:col-span-7 space-y-6"
+                : "md:col-span-12 space-y-6"
+            }
+          >
+            <div className="inline-flex items-center gap-2 text-[#ebd3be] text-xs uppercase tracking-widest font-medium">
+              <Sparkles className="size-3.5" /> Creative Portfolio
+            </div>
+
+            <h1 className="text-4xl sm:text-6xl font-serif italic text-white tracking-tight leading-[1.15]">
+              {hero.name}
+            </h1>
+
+            <p className="text-zinc-400 text-base sm:text-lg font-light leading-relaxed max-w-xl">
+              {hero.title}. {hero.subtitle}
+            </p>
+
+            <div className="pt-4 flex flex-wrap gap-4">
+              {contact.email && (
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="bg-[#ebd3be] text-[#0b0a0a] font-medium text-xs tracking-wider uppercase px-6 py-3.5 rounded-full hover:bg-white transition-all shadow-lg"
+                >
+                  Let&apos;s Work Together
+                </a>
+              )}
+              <a
+                href="#projects"
+                className="inline-flex items-center gap-2 border border-zinc-800 text-zinc-300 px-6 py-3.5 rounded-full text-xs tracking-wider uppercase hover:bg-zinc-900/40 transition-all"
+              >
+                Review Projects
+              </a>
+            </div>
+          </div>
+
+          {/* Profile Picture Frame (Designer Gallery Vibe) */}
+          {isValidAvatar(hero.image) && (
+            <div className="md:col-span-5 flex justify-center md:justify-end">
+              <div className="relative group p-2">
+                {/* Editorial shadow & glow behind image */}
+                <div className="absolute inset-0 bg-[#ebd3be]/10 blur-2xl rounded-full" />
+                <div className="relative size-64 sm:size-72 rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 p-2 shadow-2xl">
+                  <Image
+                    src={hero?.image || ""}
+                    alt={hero.name}
+                    height={5}
+                    width={5}
+                    className="w-full h-full object-cover rounded-xl grayscale contrast-[1.1] hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </header>
 
-      {/* OVERVIEW */}
-      <section
-        id="overview"
-        className="max-w-4xl mx-auto py-20 px-6 border-t border-zinc-900 scroll-mt-20"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <h2 className="font-sans text-xs uppercase tracking-widest text-zinc-600 font-bold">
-              Overview
+      {/* MAIN CONTAINER */}
+      <main className="max-w-5xl mx-auto px-6 space-y-32 pb-40">
+        {/* ABOUT SECTION */}
+        <section
+          id="about"
+          className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-zinc-900/60 pt-16"
+        >
+          <div className="md:col-span-4">
+            <h2 className="text-xs uppercase tracking-[0.2em] text-[#ebd3be] font-medium flex items-center gap-2">
+              <Palette className="size-3.5" /> Introduction
             </h2>
-            {isValidAvatar(hero.image) && (
-              <img
-                src={hero.image}
-                alt={hero.name}
-                className="mt-4 size-24 rounded-lg object-cover grayscale border border-zinc-800"
-              />
-            )}
           </div>
-          <div className="md:col-span-3 space-y-4">
-            <h3 className="text-xl md:text-2xl text-zinc-200 font-light italic">
+          <div className="md:col-span-8 space-y-4">
+            <h3 className="text-xl sm:text-2xl text-white font-serif italic leading-snug">
               {about.headline}
             </h3>
-            <p className="font-sans text-zinc-400 text-sm font-light leading-relaxed">
+            <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
               {about.description}
             </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* EXPERTISE NODES */}
-      {skills?.categories && skills.categories.length > 0 && (
-        <section
-          id="expertise"
-          className="max-w-4xl mx-auto py-20 px-6 border-t border-zinc-900 scroll-mt-20"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <h2 className="font-sans text-xs uppercase tracking-widest text-zinc-600 font-bold">
-              Expertise Matrix
-            </h2>
-            <div className="md:col-span-3 grid gap-6 sm:grid-cols-2">
+        {/* SKILLS SECTION */}
+        {skills?.categories && skills.categories.length > 0 && (
+          <section
+            id="skills"
+            className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-zinc-900/60 pt-16"
+          >
+            <div className="md:col-span-4">
+              <h2 className="text-xs uppercase tracking-[0.2em] text-[#ebd3be] font-medium flex items-center gap-2">
+                <Compass className="size-3.5" /> Core Skills
+              </h2>
+            </div>
+            <div className="md:col-span-8 grid gap-6 sm:grid-cols-2">
               {skills.categories.map((cat, i) => (
                 <div
                   key={i}
-                  className="border border-zinc-900 p-5 rounded-lg bg-zinc-900/10 space-y-2"
+                  className="p-5 rounded-2xl bg-zinc-950/40 border border-zinc-900/60"
                 >
-                  <h4 className="font-sans text-xs font-semibold uppercase text-amber-500/90 tracking-wide">
+                  <h4 className="text-xs font-semibold text-white uppercase tracking-wider mb-3">
                     {cat.name}
                   </h4>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1.5">
                     {cat.items.map((item, idx) => (
                       <span
                         key={idx}
-                        className="font-sans text-xs text-zinc-400 bg-zinc-900 border border-zinc-800/60 px-2 py-0.5 rounded"
+                        className="text-xs px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800/40 text-zinc-400"
                       >
                         {item}
                       </span>
@@ -167,111 +267,202 @@ export function ExecutivePortfolio({ data }: { data: PortfolioData }) {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* CASE STUDIES */}
-      {projects && projects.length > 0 && (
-        <section
-          id="cases"
-          className="max-w-4xl mx-auto py-20 px-6 border-t border-zinc-900 scroll-mt-20"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <h2 className="font-sans text-xs uppercase tracking-widest text-zinc-600 font-bold">
-              Case Projects
-            </h2>
-            <div className="md:col-span-3 space-y-6">
+        {/* PROJECTS SECTION */}
+        {projects && projects.length > 0 && (
+          <section
+            id="projects"
+            className="border-t border-zinc-900/60 pt-16 space-y-12"
+          >
+            <div className="flex flex-col sm:flex-row justify-between items-baseline gap-2">
+              <h2 className="text-xs uppercase tracking-[0.2em] text-[#ebd3be] font-medium flex items-center gap-2">
+                <Heart className="size-3.5" /> Selected Creations
+              </h2>
+              <span className="text-xs text-zinc-500 font-light">
+                Recent architectural & digital projects
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {projects.map((proj) => (
                 <div
                   key={proj.id}
-                  className="border border-zinc-900 bg-zinc-900/20 p-6 rounded-xl flex flex-col justify-between space-y-4"
+                  className="group flex flex-col justify-between p-8 rounded-2xl bg-zinc-950/40 border border-zinc-900/80 hover:border-zinc-800 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-base font-light text-zinc-100">
+                      <h4 className="text-lg text-white font-serif italic group-hover:text-[#ebd3be] transition-colors">
                         {proj.title}
                       </h4>
                       {proj.link && (
                         <Link
                           href={proj.link}
                           target="_blank"
-                          className="font-sans text-xs text-amber-500 hover:underline flex items-center gap-1"
+                          className="text-zinc-500 hover:text-white transition-colors"
                         >
-                          Review Node <ArrowRight className="size-3" />
+                          <ArrowUpRight className="size-4" />
                         </Link>
                       )}
                     </div>
-                    <p className="font-sans text-zinc-400 text-xs font-light leading-relaxed">
+                    <p className="text-zinc-400 text-sm leading-relaxed line-clamp-4">
                       {proj.description}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 font-sans text-[10px] uppercase text-zinc-500 tracking-wider">
-                    {proj.technologies.join("  •  ")}
+                  <div className="flex flex-wrap gap-2 pt-6">
+                    {proj.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-[10px] uppercase tracking-wider text-zinc-500"
+                      >
+                        {tech}
+                      </span>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* LEADERSHIP HISTORY */}
-      {experience && experience.length > 0 && (
-        <section
-          id="history"
-          className="max-w-4xl mx-auto py-20 px-6 border-t border-zinc-900 mb-12 scroll-mt-20"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <h2 className="font-sans text-xs uppercase tracking-widest text-zinc-600 font-bold">
-              Chronology
-            </h2>
-            <div className="md:col-span-3 space-y-8">
+        {/* WORK HISTORY SECTION */}
+        {experience && experience.length > 0 && (
+          <section
+            id="experience"
+            className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-zinc-900/60 pt-16"
+          >
+            <div className="md:col-span-4">
+              <h2 className="text-xs uppercase tracking-[0.2em] text-[#ebd3be] font-medium">
+                Professional Path
+              </h2>
+            </div>
+            <div className="md:col-span-8 space-y-4">
               {experience.map((exp) => (
                 <div
                   key={exp.id}
-                  className="grid grid-cols-1 sm:grid-cols-4 gap-2 font-sans border-b border-zinc-900 pb-6"
+                  className="p-6 rounded-xl bg-zinc-950/10 border border-zinc-900/80 hover:bg-zinc-950/40 transition-all grid grid-cols-1 sm:grid-cols-4 gap-4"
                 >
-                  <div className="text-xs font-mono text-amber-500/80 uppercase">
-                    {exp.period}
-                  </div>
-                  <div className="sm:col-span-3 space-y-1">
-                    <h3 className="text-zinc-200 font-medium text-sm flex items-center gap-1.5">
-                      <Briefcase className="size-3.5 text-zinc-600" />{" "}
-                      {exp.role}
-                    </h3>
-                    <div className="text-xs text-zinc-500">{exp.company}</div>
-                    <p className="text-zinc-400 text-xs leading-relaxed font-light pt-2">
+                  <span className="text-xs text-zinc-500">{exp.period}</span>
+                  <div className="sm:col-span-3 space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <h4 className="text-sm font-semibold text-white">
+                        {exp.role}
+                      </h4>
+                      <span className="text-xs font-medium text-[#ebd3be] bg-[#ebd3be]/5 px-2.5 py-0.5 rounded-full border border-[#ebd3be]/20 w-fit">
+                        {exp.company}
+                      </span>
+                    </div>
+                    <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
                       {exp.description}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {/* BEAUTIFUL DESIGNER EDUCATION SECTION */}
+        {education && education.length > 0 && (
+          <section
+            id="education"
+            className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-zinc-900/60 pt-16"
+          >
+            <div className="md:col-span-4">
+              <h2 className="text-xs uppercase tracking-[0.2em] text-[#ebd3be] font-medium flex items-center gap-2">
+                <GraduationCap className="size-3.5" /> Education
+              </h2>
+            </div>
+            <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {education.map((edu) => (
+                <div
+                  key={edu.id}
+                  className="p-6 rounded-2xl bg-zinc-950/40 border border-zinc-900/80 hover:border-zinc-800 transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest bg-zinc-900 px-2.5 py-1 rounded w-fit block">
+                      {edu.year}
+                    </span>
+                    <h4 className="text-white font-medium text-sm leading-snug">
+                      {edu.degree}
+                    </h4>
+                  </div>
+                  <div className="text-xs text-zinc-500 mt-4 border-t border-zinc-900 pt-3">
+                    {edu.school}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* CALL TO ACTION */}
+        <section id="contact" className="border-t border-zinc-900/60 pt-16">
+          <div className="rounded-3xl bg-zinc-950 p-8 sm:p-12 text-center space-y-6 max-w-2xl mx-auto border border-zinc-900">
+            <h3 className="text-2xl sm:text-3xl font-serif italic text-white">
+              Let&apos;s connect
+            </h3>
+            <p className="text-zinc-400 text-sm max-w-sm mx-auto leading-relaxed">
+              Have an exciting project or looking to grow your creative
+              engineering team? I&apos;d love to join the conversation.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+              {contact.email && (
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="w-full sm:w-auto bg-[#ebd3be] hover:bg-white text-[#0b0a0a] text-xs uppercase tracking-wider font-medium px-6 py-3.5 rounded-full transition-all text-center"
+                >
+                  Email Me
+                </a>
+              )}
+              <div className="flex items-center gap-4">
+                {contact.github && (
+                  <Link
+                    href={contact.github}
+                    target="_blank"
+                    className="p-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-all"
+                  >
+                    <GithubIcon className="size-4" />
+                  </Link>
+                )}
+                {contact.linkedin && (
+                  <Link
+                    href={contact.linkedin}
+                    target="_blank"
+                    className="p-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-all"
+                  >
+                    <LinkedinIcon className="size-4" />
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </section>
-      )}
+      </main>
 
-      {/* DISPATCH FOOTER SOCIAL ARGS */}
-      <footer className="max-w-4xl mx-auto py-12 px-6 border-t border-zinc-900 flex flex-col sm:flex-row gap-4 justify-between items-center font-sans text-xs text-zinc-600">
-        <div>System Output // Verified Credentials</div>
-        <div className="flex items-center gap-4">
+      {/* FOOTER */}
+      <footer className="max-w-5xl mx-auto py-12 px-6 border-t border-zinc-900/60 flex flex-col sm:flex-row gap-4 justify-between items-center text-xs text-zinc-600">
+        <div>
+          &copy; {new Date().getFullYear()} {hero.name}
+        </div>
+        <div className="flex items-center gap-6">
           {contact.github && (
             <Link
               href={contact.github}
               target="_blank"
-              className="hover:text-amber-500 transition"
+              className="hover:text-white transition-colors"
             >
-              <GithubIcon className="size-4" />
+              GitHub
             </Link>
           )}
           {contact.linkedin && (
             <Link
               href={contact.linkedin}
               target="_blank"
-              className="hover:text-amber-500 transition"
+              className="hover:text-white transition-colors"
             >
-              <LinkedinIcon className="size-4" />
+              LinkedIn
             </Link>
           )}
         </div>
