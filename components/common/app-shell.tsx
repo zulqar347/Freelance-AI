@@ -77,7 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
               <span>
                 <span className="block text-sm font-semibold text-white">
-                  Rah AI
+                  Craftyn AI
                 </span>
                 <span className="text-xs text-zinc-500">Premium workspace</span>
               </span>

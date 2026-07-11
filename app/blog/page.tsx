@@ -3,9 +3,9 @@ import { createPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Rah AI Blog for Better Client Outreach",
+  title: "Craftyn AI Blog for Better Client Outreach",
   description:
-    "Read practical freelance growth tips, proposal writing advice, and profile optimization guidance powered by Rah AI.",
+    "Read practical freelance growth tips, proposal writing advice, and profile optimization guidance powered by Craftyn AI.",
   path: "/blog",
   keywords: [
     "freelance blog",
@@ -23,11 +23,11 @@ export default function BlogPage() {
       "A practical guide for freelancers using AI to improve proposals, profiles, resumes, and cover letters.",
     author: {
       "@type": "Organization",
-      name: "Rah AI",
+      name: "Craftyn AI",
     },
     publisher: {
       "@type": "Organization",
-      name: "Rah AI",
+      name: "Craftyn AI",
       logo: {
         "@type": "ImageObject",
         url: "https://freelanceai.app/og-image.svg",
@@ -44,7 +44,7 @@ export default function BlogPage() {
       />
       <div className="mb-8">
         <p className="text-sm font-medium uppercase tracking-[0.25em] text-cyan-300">
-          Rah AI blog
+          Craftyn AI blog
         </p>
         <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">
           Practical advice for freelancers who want better client results

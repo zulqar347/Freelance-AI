@@ -56,6 +56,7 @@ export interface UserProfilePayload {
 export function buildProfilePrompt(
   platform: "linkedin" | "fiverr" | "upwork" | "resume",
   profile: UserProfilePayload,
+  jobDescription?: string,
 ) {
   const prompts = {
     linkedin: linkedinPrompt,
@@ -64,9 +65,26 @@ export function buildProfilePrompt(
     resume: resumePrompt,
   };
 
+  let userContent = JSON.stringify(profile, null, 2);
+
+  if (platform === "resume" && jobDescription?.trim()) {
+    userContent += `
+
+Job Description:
+${jobDescription}
+
+Instructions:
+- Tailor the resume specifically to this job description.
+- Naturally incorporate relevant ATS keywords from the job description.
+- Prioritize the candidate's most relevant skills, experience, and projects.
+- Do not invent qualifications or experience that are not present in the profile.
+- Keep the resume ATS-friendly and truthful.
+`;
+  }
+
   return {
     systemInstruction: prompts[platform],
-    userContent: JSON.stringify(profile, null, 2),
+    userContent,
   };
 }
 

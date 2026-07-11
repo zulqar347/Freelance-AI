@@ -33,10 +33,12 @@ async function generate<T>(
 export async function generateProfile<T>(
   platform: "linkedin" | "fiverr" | "upwork" | "resume",
   profile: UserProfilePayload,
+  jobDescription?: string,
 ): Promise<T> {
   const { systemInstruction, userContent } = buildProfilePrompt(
     platform,
     profile,
+    jobDescription,
   );
 
   return generate<T>(systemInstruction, userContent);

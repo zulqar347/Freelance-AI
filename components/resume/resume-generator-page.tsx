@@ -3,10 +3,11 @@
 import { AppShell } from "@/components/common/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "../ui/field";
 import { useGenerateProfile, useGeneratedProfiles } from "@/hooks/use-app-data";
 import { cn } from "@/lib/utils";
 import type { Generation } from "@/types/frontend";
-import { FileText, Sparkles, Download, LayoutGrid } from "lucide-react";
+import { FileText, Sparkles, Download, LayoutGrid, Target } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { ModernAtsResume, ResumeData, ThemeColor } from "./resume1";
 import { ExecutiveSidebarResume } from "./resume2";
@@ -84,10 +85,14 @@ const mockResumeData: ResumeData = {
   ],
 };
 
+// Minimum characters before we treat pasted text as a "real" job description
+const MIN_JD_LENGTH = 40;
+
 export function ResumeGeneratorPage() {
   const [selectedLayout, setSelectedLayout] = useState<LayoutType>("ats");
   const [selectedTheme, setSelectedTheme] = useState<ThemeColor>("indigo");
   const [current, setCurrent] = useState<Generation | null>(null);
+  const [jobDescription, setJobDescription] = useState("");
 
   const generate = useGenerateProfile();
   const history = useGeneratedProfiles();
@@ -96,6 +101,8 @@ export function ResumeGeneratorPage() {
     () => history.data?.filter((item) => item.platform === "resume") ?? [],
     [history.data],
   );
+
+  const isTailored = jobDescription.trim().length >= MIN_JD_LENGTH;
 
   // The generation to display
   const generationToDisplay = useMemo(() => {
@@ -148,6 +155,21 @@ export function ResumeGeneratorPage() {
     }
   };
 
+  const handleGenerate = async () => {
+    try {
+      const newData = await generate.mutateAsync({
+        platform: "resume",
+        jobDescription: isTailored ? jobDescription.trim() : undefined,
+      });
+
+      setCurrent(newData);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("Generation failed:", err.message);
+      }
+    }
+  };
+
   return (
     <AppShell>
       {/* Global CSS style injected cleanly using standard React props to avoid build errors */}
@@ -182,6 +204,45 @@ export function ResumeGeneratorPage() {
               Engineered to beat tracking systems.
             </h1>
           </div>
+
+          {/* Job Description Targeting Box */}
+          <Card className="p-5 border-white/10 bg-white/5">
+            <h3 className="text-sm font-medium text-white flex items-center gap-2">
+              <Target className="size-4 text-cyan-300" />
+              Target Job Description
+            </h3>
+            <p className="mt-1 text-xs text-zinc-400">
+              Paste a job posting and the generated resume will be tailored to
+              match its keywords, skills, and priorities. Leave blank to
+              generate a general-purpose resume.
+            </p>
+            <Textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste the job description here..."
+              className="mt-4 min-h-40 resize-y border-white/10 bg-black/20 text-sm text-zinc-200 placeholder:text-zinc-500 focus-visible:ring-cyan-300/50"
+            />
+            <div className="mt-3 flex items-center justify-between text-xs">
+              <span
+                className={cn(
+                  "font-medium",
+                  isTailored ? "text-cyan-300" : "text-zinc-500",
+                )}
+              >
+                {isTailored
+                  ? "Tailoring enabled for this generation"
+                  : "No job description added yet"}
+              </span>
+              {jobDescription.length > 0 && (
+                <button
+                  onClick={() => setJobDescription("")}
+                  className="text-zinc-500 hover:text-zinc-300 transition"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </Card>
 
           {/* Layout Configuration Box */}
           <Card className="p-5 border-white/10 bg-white/5">
@@ -237,23 +298,16 @@ export function ResumeGeneratorPage() {
           </Card>
 
           <Button
-            onClick={async () => {
-              try {
-                const newData = await generate.mutateAsync("resume");
-                setCurrent(newData);
-              } catch (err) {
-                if (err instanceof Error) {
-                  console.error("Generation failed:", err.message);
-                }
-              }
-            }}
+            onClick={handleGenerate}
             disabled={generate.isPending}
             className="w-full"
           >
             <Sparkles className="size-4" />
             {generate.isPending
               ? "Parsing Context..."
-              : "Generate Custom Resume"}
+              : isTailored
+                ? "Generate Tailored Resume"
+                : "Generate Custom Resume"}
           </Button>
         </div>
 
@@ -263,6 +317,11 @@ export function ResumeGeneratorPage() {
           <div className="z-10 flex items-center justify-between border-b border-white/10 bg-zinc-950/80 px-4 py-3 backdrop-blur-sm print:hidden">
             <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
               Live Preview Workspace
+              {isTailored && (
+                <span className="ml-2 rounded-full bg-cyan-300/10 px-2 py-0.5 text-[10px] normal-case tracking-normal text-cyan-300">
+                  Tailored
+                </span>
+              )}
             </span>
             {activeResumeData && (
               <Button

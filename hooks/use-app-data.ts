@@ -10,7 +10,6 @@ import {
   deleteExperienceItem,
   deleteProjectItem,
   generateCoverLetter,
-  generateLandingPage,
   generateProfile,
   generateProposal,
   getCoverLetters,
@@ -56,10 +55,16 @@ export function useGeneratedProfiles() {
   });
 }
 
+export interface GenerateProfileInput {
+  platform: Platform;
+  jobDescription?: string;
+}
+
 export function useGenerateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (platform: Platform) => generateProfile(platform),
+    mutationFn: ({ platform, jobDescription }: GenerateProfileInput) =>
+      generateProfile(platform, jobDescription),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["generations"] });
       void queryClient.invalidateQueries({ queryKey: ["me"] });

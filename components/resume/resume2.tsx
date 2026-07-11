@@ -42,7 +42,7 @@ export const ExecutiveSidebarResume: React.FC<TemplateProps> = ({
   return (
     <div
       id="resume-print-canvas"
-      className="w-full max-w-[8.5in] mx-auto bg-white text-slate-800 font-sans
+      className="w-full max-w-204 mx-auto bg-white text-slate-800 font-sans
       grid grid-cols-1 md:grid-cols-12 print:grid-cols-12
       shadow-sm print:shadow-none overflow-hidden"
     >

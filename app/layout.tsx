@@ -5,19 +5,19 @@ import { createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata({
   title:
-    "Rah AI - AI Freelance Assistant for Resumes, Proposals, Portfolios & Client Growth",
+    "Craftyn AI - AI Freelance Assistant for Resumes, Proposals, Portfolios & Client Growth",
 
   description:
-    "Rah AI helps freelancers create AI-powered resumes, ATS-friendly CVs, professional portfolios, Fiverr gigs, Upwork proposals, cover letters, LinkedIn profiles, and client-winning content to grow their freelance career.",
+    "Craftyn AI helps freelancers create AI-powered resumes, ATS-friendly CVs, professional portfolios, Fiverr gigs, Upwork proposals, cover letters, LinkedIn profiles, and client-winning content to grow their freelance career.",
 
   path: "/",
 
   keywords: [
     // Brand
-    "Rah AI",
-    "Rah AI platform",
-    "Rah AI freelance assistant",
-    "Rah AI career platform",
+    "Craftyn AI",
+    "Craftyn AI platform",
+    "Craftyn AI freelance assistant",
+    "Craftyn AI career platform",
 
     // AI freelancer tools
     "AI tools for freelancers",

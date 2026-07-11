@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = createPageMetadata({
   title:
-    "Rah AI - AI Freelancer Toolkit for Profiles, Proposals, Resumes & Cover Letters",
+    "Craftyn AI - AI Freelancer Toolkit for Profiles, Proposals, Resumes & Cover Letters",
   description:
-    "Use Rah AI to create Upwork proposals, Fiverr profiles, LinkedIn profile copy, ATS resumes, and cover letters with AI tailored to your freelance niche.",
+    "Use Craftyn AI to create Upwork proposals, Fiverr profiles, LinkedIn profile copy, ATS resumes, and cover letters with AI tailored to your freelance niche.",
   path: "/",
   keywords: [
     "AI proposal generator",

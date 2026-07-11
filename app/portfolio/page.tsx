@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { PortfolioGeneratorPage } from "@/components/dashboard/portfolioGenerator-page";
 
 export const metadata: Metadata = {
-  title: "Portfolio Generator | Rah AI",
+  title: "Portfolio Generator | Craftyn AI",
   description:
-    "View and manage your portfolios with Rah AI. Create professional portfolios optimized for your freelancing and career growth.",
+    "View and manage your portfolios with Craftyn AI. Create professional portfolios optimized for your freelancing and career growth.",
   keywords: [
     "portfolio generator",
     "AI portfolio builder",

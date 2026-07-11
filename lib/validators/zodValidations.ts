@@ -1,6 +1,7 @@
 import { z } from "zod";
 export const ProfileGenerationSchema = z.object({
   platform: z.enum(["fiverr", "linkedin", "resume", "upwork"]),
+  jobDescription: z.string().optional(),
 });
 
 export const ProposalGenerationSchema = z.object({

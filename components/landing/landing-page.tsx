@@ -59,7 +59,7 @@ export function LandingPage() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Rah AI",
+    name: "Craftyn AI",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description:
@@ -96,7 +96,7 @@ export function LandingPage() {
               <Sparkles className="size-4.5" />
             </span>
             <span className="font-semibold tracking-tight text-zinc-100">
-              Rah AI
+              Craftyn AI
             </span>
           </Link>
           <div className="hidden items-center gap-8 text-sm font-medium text-zinc-400 md:flex">
@@ -632,7 +632,7 @@ export function LandingPage() {
             </Link>
           </div>
           <p className="mt-4 text-xs text-zinc-500 sm:mt-0">
-            &copy; {new Date().getFullYear()} Rah AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Craftyn AI. All rights reserved.
           </p>
         </div>
       </footer>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "Rah AI",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://freelanceai.app",
+  name: "Craftyn AI",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://Rahh-ai.vercel.app",
   description:
     "AI-powered profile, resume, proposal, and cover letter generation for freelancers.",
 };
@@ -14,7 +14,7 @@ export const defaultKeywords = [
   "LinkedIn profile generator",
   "AI resume builder",
   "AI cover letter generator",
-  "Rah AI",
+  "Craftyn AI",
   "AI for freelancers",
   "resume optimization",
   "freelance tools",

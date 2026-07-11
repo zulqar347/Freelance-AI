@@ -65,12 +65,15 @@ export async function deleteProfile() {
   return request<{ message: string }>("/api/profile", { method: "DELETE" });
 }
 
-export async function generateProfile(platform: Platform) {
+export async function generateProfile(
+  platform: Platform,
+  jobDescription?: string,
+) {
   const response = await request<ApiSuccessResponse<Generation>>(
     "/api/generate/profile",
     {
       method: "POST",
-      body: JSON.stringify({ platform }),
+      body: JSON.stringify({ platform, jobDescription }),
     },
   );
   return response.data;

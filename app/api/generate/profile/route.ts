@@ -25,10 +25,18 @@ export const POST = async (req: Request) => {
       );
     }
     await ConnectDB();
-    const { platform } = ProfileGenerationSchema.parse(await req.json());
+    const { platform, jobDescription } = ProfileGenerationSchema.parse(
+      await req.json(),
+    );
     const profile = await executeWithCredits(userId, async () => {
       const aiProfile = await fetchAiProfile(userId);
-      const generatedProfile = await generateProfile(platform, aiProfile);
+      const generatedProfile = await generateProfile(
+        platform,
+        aiProfile,
+        platform === "resume" && jobDescription?.trim()
+          ? jobDescription
+          : undefined,
+      );
       return Generation.findOneAndUpdate(
         {
           platform,

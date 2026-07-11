@@ -15,7 +15,6 @@ import {
   Calendar,
   ArrowUpRight,
   FileText,
-  RefreshCw,
   Clock,
 } from "lucide-react";
 
@@ -108,13 +107,13 @@ export function BillingPage() {
     <AppShell>
       <div className="mx-auto max-w-6xl space-y-10 px-4 py-8 text-zinc-100 sm:px-6 lg:px-8">
         {/* 1. Hero Header */}
-        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-zinc-900 via-zinc-950 to-black p-6 border border-zinc-800/60 sm:p-8">
+        <header className="relative overflow-hidden rounded-2xl bg-linear-to-b from-zinc-900 via-zinc-950 to-black p-6 border border-zinc-800/60 sm:p-8">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_50%)]" />
           <div className="relative z-10">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-xs font-medium text-cyan-400">
               Workspace Billing
             </span>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            <h1 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text">
               Billing & Subscriptions
             </h1>
             <p className="mt-2 max-w-2xl text-base text-zinc-400">
@@ -154,7 +153,7 @@ export function BillingPage() {
                   </div>
                   <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-linear-to-r from-cyan-500 to-blue-500 transition-all duration-500 ease-out"
                       style={{ width: `${creditPercentage}%` }}
                       role="progressbar"
                       aria-valuenow={currentCredits}
@@ -180,7 +179,7 @@ export function BillingPage() {
                   <Button
                     onClick={() => handlePlanAction("Pro")}
                     disabled={checkout.isPending}
-                    className="bg-gradient-to-r from-cyan-500 to-blue-600 font-medium text-white shadow-lg shadow-cyan-500/20 hover:from-cyan-400 hover:to-blue-500 transition-all active:scale-[0.98]"
+                    className="bg-linear-to-r from-cyan-500 to-blue-600 font-medium text-white shadow-lg shadow-cyan-500/20 hover:from-cyan-400 hover:to-blue-500 transition-all active:scale-[0.98]"
                   >
                     Upgrade Now
                     <ArrowUpRight className="ml-1.5 size-4" />
