@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Lock } from "lucide-react";
 
 const EMAIL_VERIFICATION_HINT =
   "Check your inbox for a verification link. If you need another one, use the resend option below.";
@@ -44,50 +44,8 @@ export function AuthPage() {
   }, [searchParams]);
 
   async function submit(values: AuthForm) {
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      if (mode === "signup") {
-        const response = await fetch("/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-
-        if (!response.ok) {
-          throw new Error("Could not create account");
-        }
-
-        setSuccess(EMAIL_VERIFICATION_HINT);
-        setMode("signin");
-        return;
-      }
-
-      // Existing users
-      const result = await signIn("credentials", {
-        email: values.email,
-        password: values.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        throw new Error(
-          "Check your email verification link before signing in.",
-        );
-      }
-
-      router.push("/dashboard");
-    } catch (caught) {
-      setError(
-        caught instanceof Error ? caught.message : "Authentication failed",
-      );
-    } finally {
-      setLoading(false);
-    }
+    // Disabled for now
+    return;
   }
 
   return (
@@ -119,85 +77,71 @@ export function AuthPage() {
               {mode === "signin" ? "Welcome back" : "Create account"}
             </h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Continue with Google or email credentials.
+              Continue with Google (Email sign-in coming soon).
             </p>
           </div>
+
+          {/* Google Sign In - Active */}
           <Button
             variant="secondary"
-            className="mb-4 w-full"
+            className="mb-6 w-full"
             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
           >
             Continue with Google
           </Button>
-          <form onSubmit={handleSubmit(submit)} className="space-y-4">
-            {mode === "signup" ? (
+
+          <div className="relative mb-6 flex py-2 items-center">
+            <div className="flex-grow border-t border-zinc-800"></div>
+            <span className="flex-shrink mx-4 text-xs uppercase tracking-wider text-zinc-600">
+              Or
+            </span>
+            <div className="flex-grow border-t border-zinc-800"></div>
+          </div>
+
+          {/* Email Form - Visual Only / Disabled */}
+          <div className="opacity-40 pointer-events-none select-none space-y-4">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+              {mode === "signup" ? (
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input
+                    {...register("name")}
+                    placeholder="Jane Cooper"
+                    disabled
+                  />
+                </div>
+              ) : null}
               <div className="space-y-2">
-                <Label>Name</Label>
-                <Input {...register("name")} placeholder="Jane Cooper" />
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  {...register("email")}
+                  placeholder="you@company.com"
+                  disabled
+                />
               </div>
-            ) : null}
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input
-                type="email"
-                {...register("email", { required: true })}
-                placeholder="you@company.com"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Password</Label>
-              <Input
-                type="password"
-                {...register("password", { required: true })}
-                placeholder="••••••••"
-              />
-            </div>
-            {error ? <p className="text-sm text-red-300">{error}</p> : null}
-            {success || verificationMessage ? (
-              <p className="text-sm text-cyan-300">
-                {success || verificationMessage}
-              </p>
-            ) : null}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading
-                ? "Please wait..."
-                : mode === "signin"
-                  ? "Sign in"
-                  : "Create account"}
-            </Button>
-          </form>
-          {mode === "signin" ? (
-            <button
-              type="button"
-              className="mt-3 w-full text-sm text-zinc-400 hover:text-white"
-              onClick={async () => {
-                const email = getValues("email");
-                if (!email) {
-                  setError("Enter your email address first.");
-                  return;
-                }
+              <div className="space-y-2">
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  {...register("password")}
+                  placeholder="••••••••"
+                  disabled
+                />
+              </div>
+            </form>
+          </div>
 
-                const response = await fetch("/api/auth/resend-verification", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email }),
-                });
+          {/* Coming Soon Indicator instead of Submit Button */}
+          <div className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-800 bg-zinc-950/50 py-3 text-sm font-medium text-zinc-500">
+            <Lock className="size-4" />
+            Email Sign-In Coming Soon
+          </div>
 
-                const payload = await response.json();
-                setSuccess(payload.message || "Verification email sent.");
-                setError("");
-              }}
-            >
-              Resend verification email
-            </button>
-          ) : null}
+          {/* Bottom Toggle - Disabled visually */}
           <button
-            className="mt-5 w-full text-sm text-zinc-400 hover:text-white"
-            onClick={() => {
-              setError("");
-              setSuccess("");
-              setMode(mode === "signin" ? "signup" : "signin");
-            }}
+            className="mt-5 w-full text-sm text-zinc-600 cursor-not-allowed pointer-events-none"
+            disabled
           >
             {mode === "signin"
               ? "Need an account? Create one"
